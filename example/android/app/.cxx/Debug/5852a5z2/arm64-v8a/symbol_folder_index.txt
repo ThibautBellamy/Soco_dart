@@ -1,0 +1,1 @@
+D:\Git\Titou\SoCoFlutter\soco_flutter\example\build\app\intermediates\cxx\Debug\5852a5z2\obj\arm64-v8a
