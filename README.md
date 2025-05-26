@@ -9,7 +9,8 @@ A Flutter library to control Sonos speakers, inspired by the Python SoCo library
 - Volume and audio settings management
 - Playlist and queue management
 - Information about currently playing tracks
-- Support for speaker groups
+- Microphone streaming to Sonos speakers
+- Speaker state saving and restoration
 
 ## Installation
 
@@ -24,31 +25,45 @@ dependencies:
 import 'package:soco_flutter/soco_flutter.dart';
 
 void main() async {
+  // Initialize the discovery service
+  final sonosDiscovery = SonosDiscovery();
+  
   // Discover Sonos speakers on the network
-  final devices = await SocoFlutter.discoverDevices();
+  final speakers = await sonosDiscovery.startDiscovery(Duration(seconds: 5));
   
-  // Select the first speaker found
-  final speaker = devices.first;
-  
-  // Control playback
-  await speaker.play();
-  await speaker.setVolume(50);
-  
-  // Get information about the current track
-  final track = await speaker.getCurrentTrackInfo();
-  print('Now playing: ${track.title} by ${track.artist}');
+  if (speakers.isNotEmpty) {
+    // Select the first speaker found
+    final speaker = speakers.first;
+    
+    // Get speaker info
+    print('Connected to: ${speaker.playerName}');
+    
+    // Control playback
+    await speaker.play();
+    await speaker.setVolume(50);
+    
+    // Get information about the current track
+    final track = await speaker.getCurrentTrackInfo();
+    print('Now playing: ${track.title} by ${track.artist}');
+    
+    // Stream microphone to speaker (example)
+    final micService = MicrophoneStreamService();
+    await micService.initialize();
+    final streamUrl = await micService.startStreaming(speaker);
+    print('Streaming from microphone: $streamUrl');
+    
+    // Later, stop streaming and restore previous state
+    await micService.stopStreaming();
+  }
 }
 ```
 
 ## Project Structure
 
-- `lib/src/device.dart`: Class representing a Sonos speaker
-- `lib/src/discovery.dart`: Device discovery features
-- `lib/src/transport.dart`: Playback and transport control
-- `lib/src/music_library.dart`: Music library management
-- `lib/src/groups.dart`: Speaker group management
-- `lib/src/models/`: Data models (track, album, etc.)
+- `lib/src/models/`: Data models (speaker, track, etc.)
 - `lib/src/services/`: SOAP/UPnP services for communication
+- `lib/src/discovery.dart`: Device discovery
+- `lib/src/utils/`: Helper utilities
 
 ## Contributing
 
@@ -65,7 +80,8 @@ Une bibliothèque Flutter pour contrôler les enceintes Sonos, inspirée par la 
 - Gestion du volume et des paramètres audio
 - Gestion des playlists et des files d'attente
 - Informations sur les pistes en cours de lecture
-- Support pour les groupes d'enceintes
+- Streaming du microphone vers les enceintes Sonos
+- Sauvegarde et restauration de l'état des enceintes
 
 ## Installation
 
@@ -80,31 +96,45 @@ dependencies:
 import 'package:soco_flutter/soco_flutter.dart';
 
 void main() async {
+  // Initialiser le service de découverte
+  final sonosDiscovery = SonosDiscovery();
+  
   // Découvrir les enceintes Sonos sur le réseau
-  final devices = await SocoFlutter.discoverDevices();
+  final speakers = await sonosDiscovery.startDiscovery(Duration(seconds: 5));
   
-  // Sélectionner la première enceinte trouvée
-  final speaker = devices.first;
-  
-  // Contrôler la lecture
-  await speaker.play();
-  await speaker.setVolume(50);
-  
-  // Obtenir des informations sur la piste en cours
-  final track = await speaker.getCurrentTrackInfo();
-  print('En cours de lecture: ${track.title} par ${track.artist}');
+  if (speakers.isNotEmpty) {
+    // Sélectionner la première enceinte trouvée
+    final speaker = speakers.first;
+    
+    // Obtenir les informations sur l'enceinte
+    print('Connecté à: ${speaker.playerName}');
+    
+    // Contrôler la lecture
+    await speaker.play();
+    await speaker.setVolume(50);
+    
+    // Obtenir des informations sur la piste en cours
+    final track = await speaker.getCurrentTrackInfo();
+    print('En cours de lecture: ${track.title} par ${track.artist}');
+    
+    // Streaming du microphone vers l'enceinte (exemple)
+    final micService = MicrophoneStreamService();
+    await micService.initialize();
+    final streamUrl = await micService.startStreaming(speaker);
+    print('Streaming depuis le microphone: $streamUrl');
+    
+    // Plus tard, arrêter le streaming et restaurer l'état précédent
+    await micService.stopStreaming();
+  }
 }
 ```
 
 ## Structure du projet
 
-- `lib/src/device.dart`: Classe représentant une enceinte Sonos
-- `lib/src/discovery.dart`: Fonctionnalités de découverte des appareils
-- `lib/src/transport.dart`: Contrôle de lecture et transport
-- `lib/src/music_library.dart`: Gestion des bibliothèques musicales
-- `lib/src/groups.dart`: Gestion des groupes d'enceintes
-- `lib/src/models/`: Modèles de données (piste, album, etc.)
+- `lib/src/models/`: Modèles de données (speaker, track, etc.)
 - `lib/src/services/`: Services SOAP/UPnP pour la communication
+- `lib/src/discovery.dart`: Découverte des appareils
+- `lib/src/utils/`: Utilitaires
 
 ## Contribution
 
