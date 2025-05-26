@@ -3,6 +3,7 @@ import 'dart:io';
 import 'dart:typed_data';
 import 'package:record/record.dart';
 import 'package:soco_flutter/src/utils/utils.dart';
+import 'package:soco_flutter/src/models/speaker.dart';
 
 class MicrophoneStreamService {
   final _audioRecorder = AudioRecorder();
@@ -19,10 +20,9 @@ class MicrophoneStreamService {
   // Liste des clients connectés pour remplacer forEach
   final List<HttpResponse> _clients = [];
 
-  Future<void> initialize() async {
-    // Vérifier les permissions déjà fait dans AudioStreamNotifier
+  Speaker? _targetSpeaker;
 
-    // Trouver l'adresse IP locale
+  Future<void> initialize() async {
     _localIp = await _getLocalIpAddress();
     if (_localIp == null) {
       throw Exception("Impossible de déterminer l'adresse IP locale");
@@ -47,7 +47,7 @@ class MicrophoneStreamService {
     return null;
   }
 
-  Future<String?> startStreaming() async {
+  Future<String?> startStreaming(Speaker speaker) async {
     if (_isStreamingActive) {
       myPrint("Streaming déjà actif, arrêt avant redémarrage");
       await stopStreaming();
@@ -56,6 +56,11 @@ class MicrophoneStreamService {
     if (_localIp == null) return null;
 
     try {
+      _targetSpeaker = speaker;
+
+      // Sauvegarder l'état actuel du speaker
+      await _targetSpeaker!.saveState();
+
       // Vider le buffer et la liste des clients
       _audioBuffer.clear();
       _clients.clear();
@@ -73,14 +78,13 @@ class MicrophoneStreamService {
         request.response.bufferOutput = false; // Désactiver la mise en tampon
 
         // En-têtes pour streaming audio
-        request.response.headers.add('Content-Type', 'audio/aac');  // Format plus standard
+        request.response.headers.add('Content-Type', 'audio/aac'); // Format plus standard
         request.response.headers.add('Connection', 'Keep-Alive');
         request.response.headers.add('Cache-Control', 'no-cache, no-store');
         request.response.headers.add('X-Accel-Buffering', 'no');
         request.response.headers.add('Access-Control-Allow-Origin', '*');
         request.response.headers.add('Transfer-Encoding', 'chunked');
 
-       
         // Envoyer une fraction minimale des dernières données du buffer
         if (_audioBuffer.isNotEmpty) {
           // Limiter à ~0.1 seconde de données
@@ -101,10 +105,10 @@ class MicrophoneStreamService {
 
       // Démarrer le flux audio avec des paramètres optimisés
       final stream = await _audioRecorder.startStream(const RecordConfig(
-        encoder: AudioEncoder.aacLc,  // Garder AAC-LC qui fonctionne
-        sampleRate: 44100,            // Revenir à 44100 Hz pour plus de stabilité
+        encoder: AudioEncoder.aacLc, // Garder AAC-LC qui fonctionne
+        sampleRate: 44100, // Revenir à 44100 Hz pour plus de stabilité
         numChannels: 1,
-        bitRate: 96000,               // Bitrate modéré
+        bitRate: 96000, // Bitrate modéré
       ));
 
       // Écouter le flux audio
@@ -113,7 +117,8 @@ class MicrophoneStreamService {
         _audioBuffer.addAll(data);
 
         // Limiter la taille du buffer
-        if (_audioBuffer.length > 16 * 1024) { // Réduire davantage à 16KB
+        if (_audioBuffer.length > 16 * 1024) {
+          // Réduire davantage à 16KB
           _audioBuffer.removeRange(0, _audioBuffer.length - (16 * 1024));
         }
 
@@ -133,8 +138,9 @@ class MicrophoneStreamService {
 
       _isStreamingActive = true;
 
-      // Format d'URL pour Sonos
       return "$_localIp:$_streamPort/audio.aac";
+      // Format d'URL pour Sonos avec paramètre de buffer réduit
+      // return "$_localIp:$_streamPort/audio.aac?buffer=minimal";
     } catch (e) {
       myPrint("Erreur de démarrage du streaming: $e");
       await stopStreaming();
@@ -169,6 +175,12 @@ class MicrophoneStreamService {
     // Fermer le serveur
     await _server?.close(force: true);
     _server = null;
+
+    // Restaurer l'état du speaker s'il existe
+    if (_targetSpeaker != null) {
+      await _targetSpeaker!.restoreState();
+      _targetSpeaker = null;
+    }
 
     _isStreamingActive = false;
     myPrint("Streaming audio arrêté");

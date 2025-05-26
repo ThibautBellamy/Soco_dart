@@ -211,4 +211,55 @@ class AVTransportService {
     }
   }
 
+  Future<Map<String, bool>> getPlayMode() async {
+    final response = await _soapService.call('GetTransportSettings', {
+      'InstanceID': '0',
+    });
+
+    // Le mode de lecture est retourné dans un format comme "NORMAL", "SHUFFLE", "REPEAT_ALL", etc.
+    final String playMode = response['PlayMode'] ?? 'NORMAL';
+    
+    // Analyser le mode pour déterminer les états shuffle et repeat
+    final bool shuffle = playMode.contains('SHUFFLE');
+    final bool repeat = playMode.contains('REPEAT_ALL') || playMode.contains('REPEAT_ONE');
+    
+    return {
+      'shuffle': shuffle,
+      'repeat': repeat,
+    };
+  }
+
+  Future<void> addURIToQueue(String uri) async {
+    await _soapService.call('AddURIToQueue', {
+      'InstanceID': '0',
+      'EnqueuedURI': uri,
+      'EnqueuedURIMetaData': '',
+      'DesiredFirstTrackNumberEnqueued': '2147483647',
+      'EnqueueAsNext': '0',
+    });
+  }
+
+  Future<void> setAVTransportURI(String track) async {
+    await _soapService.call('SetAVTransportURI', {
+      'InstanceID': '0',
+      'CurrentURI': track,
+      'CurrentURIMetaData': '',
+    });
+  }
+
+  Future<void> setPlayMode({required bool shuffle, required bool repeat}) async {
+    await _soapService.call('SetPlayMode', {
+      'InstanceID': '0',
+      'NewPlayMode': (shuffle ? 'SHUFFLE' : '') + (repeat ? 'REPEAT_ALL' : ''),
+    });
+  }
+
+  Future<void>  restoreQueue(List<String?> trackInQueue) async {
+    await removeAllTracksFromQueue();
+    for (final track in trackInQueue) {
+      if (track != null) {
+        await addURIToQueue(track);
+      }
+    }
+  }
 }

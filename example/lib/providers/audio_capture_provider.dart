@@ -63,7 +63,7 @@ class AudioStreamNotifier extends StateNotifier<AudioStreamState> {
       // Tester d'abord si Sonos accepte les streams
       // await _streamService.testSonosCompatibility(speaker.ipAddress);
 
-      final streamUrl = await _streamService.startStreaming();
+      final streamUrl = await _streamService.startStreaming(speaker);
       if (streamUrl != null) {
         final avTransport = AVTransportService(speaker.ipAddress);
         await avTransport.startLiveAudioStream(streamUrl);

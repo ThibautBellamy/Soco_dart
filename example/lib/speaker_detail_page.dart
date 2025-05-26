@@ -102,7 +102,7 @@ class SpeakerDetailPage extends ConsumerWidget {
     final streamState = ref.watch(audioStreamProvider);
     final isStreaming = streamState.state == StreamingState.streaming;
     final isStarting = streamState.state == StreamingState.starting;
-    
+
     return Column(
       children: [
         // Message d'erreur s'il y en a un
@@ -114,15 +114,15 @@ class SpeakerDetailPage extends ConsumerWidget {
               style: TextStyle(color: Colors.red[700], fontSize: 12),
             ),
           ),
-        
+
         // Bouton principal
         FloatingActionButton(
-          backgroundColor: isStreaming 
-              ? Colors.red 
-              : isStarting 
+          backgroundColor: isStreaming
+              ? Colors.red
+              : isStarting
                   ? Colors.orange
                   : Theme.of(context).primaryColor,
-          onPressed: isStarting 
+          onPressed: isStarting
               ? null // Désactiver pendant l'initialisation
               : () {
                   if (isStreaming) {
@@ -131,28 +131,28 @@ class SpeakerDetailPage extends ConsumerWidget {
                     ref.read(audioStreamProvider.notifier).startStreaming(device);
                   }
                 },
-          tooltip: isStreaming 
-              ? 'Arrêter de parler' 
-              : isStarting 
-                  ? 'Démarrage...' 
+          tooltip: isStreaming
+              ? 'Arrêter de parler'
+              : isStarting
+                  ? 'Démarrage...'
                   : 'Parler au Sonos',
           child: Icon(
-            isStreaming 
-                ? Icons.mic_off 
-                : isStarting 
+            isStreaming
+                ? Icons.mic_off
+                : isStarting
                     ? Icons.hourglass_bottom
                     : Icons.mic,
             color: Colors.white,
           ),
         ),
-        
+
         // Texte explicatif sous le bouton
         const SizedBox(height: 8),
         Text(
-          isStreaming 
-              ? 'Streaming en direct...' 
-              : isStarting 
-                  ? 'Initialisation...' 
+          isStreaming
+              ? 'Streaming en direct...'
+              : isStarting
+                  ? 'Initialisation...'
                   : 'Parler au Sonos',
           style: TextStyle(fontSize: 12, color: Colors.grey[600]),
         ),
@@ -174,7 +174,7 @@ class SpeakerDetailPage extends ConsumerWidget {
       body: Center(
         child: SingleChildScrollView(
           child: Padding(
-            padding: const EdgeInsets.all(24.0),
+            padding: const EdgeInsets.all(5.0),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
@@ -184,12 +184,12 @@ class SpeakerDetailPage extends ConsumerWidget {
                     borderRadius: BorderRadius.circular(12),
                     child: Image.network(
                       track.albumArt!,
-                      height: 280,
-                      width: 280,
+                      height: 200,
+                      // width: 280,
                       fit: BoxFit.cover,
                       errorBuilder: (context, error, stackTrace) => Container(
-                        height: 280,
-                        width: 280,
+                        height: 200,
+                        // width: 280,
                         color: Colors.grey.shade300,
                         child: const Icon(Icons.music_note, size: 80, color: Colors.white),
                       ),
@@ -206,7 +206,7 @@ class SpeakerDetailPage extends ConsumerWidget {
                     child: const Icon(Icons.music_note, size: 80, color: Colors.white),
                   ),
 
-                const SizedBox(height: 32),
+                const SizedBox(height: 15),
 
                 // Informations sur la piste
                 Text(
@@ -214,24 +214,24 @@ class SpeakerDetailPage extends ConsumerWidget {
                   style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
                   textAlign: TextAlign.center,
                 ),
-                const SizedBox(height: 8),
+                const SizedBox(height: 4),
                 Text(
                   track?.artist ?? 'Artiste inconnu',
                   style: TextStyle(fontSize: 18, color: Colors.grey.shade700),
-                  textAlign: TextAlign.center,
+                  textAlign: TextAlign.left,
                 ),
                 const SizedBox(height: 4),
                 Text(
                   track?.album ?? 'Album inconnu',
                   style: TextStyle(fontSize: 16, color: Colors.grey.shade500),
-                  textAlign: TextAlign.center,
+                  textAlign: TextAlign.left,
                 ),
 
-                const SizedBox(height: 40),
+                const SizedBox(height: 15),
 
                 // Barre de progression avec Riverpod
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                  padding: const EdgeInsets.symmetric(horizontal: 0.0),
                   child: Column(
                     children: [
                       Slider(
@@ -256,8 +256,6 @@ class SpeakerDetailPage extends ConsumerWidget {
                     ],
                   ),
                 ),
-
-                const SizedBox(height: 24),
 
                 // Contrôles de lecture
                 Row(
@@ -305,17 +303,21 @@ class SpeakerDetailPage extends ConsumerWidget {
                   ],
                 ),
 
-                const SizedBox(height: 24),
+                const SizedBox(height: 10),
                 _buildMicrophoneButton(context, ref),
 
-                const SizedBox(height: 32),
+                const SizedBox(height: 10),
 
                 // Contrôle du volume avec Riverpod
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 24.0),
+                  padding: const EdgeInsets.symmetric(horizontal: 10.0),
                   child: Row(
                     children: [
-                      const Icon(Icons.volume_down),
+                      IconButton(icon: const Icon(Icons.volume_down),
+                        onPressed: () {
+                          ref.read(speakerProvider(device).notifier).setVolume(speakerState.volume.toInt() - 1);
+                        }, 
+                      ),
                       Expanded(
                         child: Slider(
                           min: 0,
@@ -326,7 +328,16 @@ class SpeakerDetailPage extends ConsumerWidget {
                           },
                         ),
                       ),
-                      const Icon(Icons.volume_up),
+                      IconButton(
+                        icon: const Icon(Icons.volume_up),
+                        onPressed: () {
+                          ref.read(speakerProvider(device).notifier).setVolume(speakerState.volume.toInt() + 1);
+                        }, 
+                      ),
+                      Text(
+                        '${speakerState.volume}',
+                        style: const TextStyle(fontSize: 14),
+                      ),
                     ],
                   ),
                 ),
