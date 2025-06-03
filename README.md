@@ -22,7 +22,7 @@ dependencies:
 ## Usage
 
 ```dart
-import 'package:soco_flutter/soco_flutter.dart';
+import 'package:soco_dart/soco_dart.dart';
 
 void main() async {
   // Initialize the discovery service
@@ -87,13 +87,13 @@ Une bibliothèque Flutter pour contrôler les enceintes Sonos, inspirée par la 
 
 ```yaml
 dependencies:
-  soco_flutter: ^0.1.0
+  soco_dart: ^0.1.0
 ```
 
 ## Utilisation
 
 ```dart
-import 'package:soco_flutter/soco_flutter.dart';
+import 'package:soco_dart/soco_dart.dart';
 
 void main() async {
   // Initialiser le service de découverte
