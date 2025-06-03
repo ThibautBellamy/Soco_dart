@@ -1,4 +1,4 @@
-import 'package:soco_flutter/src/utils/utils.dart';
+import 'package:soco_dart/src/utils/utils.dart';
 
 import 'soap_service.dart';
 import '../utils/xml_helper.dart';

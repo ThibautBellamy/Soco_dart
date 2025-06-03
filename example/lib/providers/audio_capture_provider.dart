@@ -1,6 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:soco_flutter/soco_flutter.dart';
+import 'package:soco_dart/soco_dart.dart';
+
 
 // États possibles pour le streaming
 enum StreamingState {

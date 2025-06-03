@@ -1,4 +1,4 @@
-import 'package:soco_flutter/src/utils/utils.dart';
+import 'package:soco_dart/src/utils/utils.dart';
 import 'package:xml/xml.dart';
 import 'package:http/http.dart' as http;
 import 'package:xml/xml.dart' as xml;

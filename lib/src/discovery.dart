@@ -1,8 +1,6 @@
 import 'dart:async';
 import 'dart:io';
-import 'package:soco_flutter/src/utils/utils.dart';
-
-import 'models/speaker.dart';
+import 'package:soco_dart/soco_dart.dart';
 
 class SonosDiscovery {
   final String multicastAddress = "239.255.255.250";

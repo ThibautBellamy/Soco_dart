@@ -2,8 +2,8 @@ import 'dart:async';
 import 'dart:io';
 import 'dart:typed_data';
 import 'package:record/record.dart';
-import 'package:soco_flutter/src/utils/utils.dart';
-import 'package:soco_flutter/src/models/speaker.dart';
+import 'package:soco_dart/src/utils/utils.dart';
+import 'package:soco_dart/src/models/speaker.dart';
 
 class MicrophoneStreamService {
   final _audioRecorder = AudioRecorder();

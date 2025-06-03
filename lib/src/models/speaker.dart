@@ -1,5 +1,5 @@
-import 'package:soco_flutter/soco_dart.dart';
-import 'package:soco_flutter/src/utils/utils.dart';
+import 'package:soco_dart/soco_dart.dart';
+import 'package:soco_dart/src/utils/utils.dart';
 
 class Speaker {
   Map<String, dynamic> speakerInfo = {};

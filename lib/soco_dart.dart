@@ -1,5 +1,3 @@
-library soco_dart;
-
 // Core functionality
 export 'src/discovery.dart';
 export 'src/models/speaker.dart';

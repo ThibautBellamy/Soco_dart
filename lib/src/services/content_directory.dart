@@ -1,4 +1,4 @@
-import 'package:soco_flutter/src/services/soap_service.dart';
+import 'package:soco_dart/src/services/soap_service.dart';
 
 class ContentDirectoryService {
   final SoapService _soapService;

@@ -2,7 +2,7 @@ import 'dart:async';
 import 'package:example/queue_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:soco_flutter/soco_flutter.dart';
+import 'package:soco_dart/soco_dart.dart';
 import 'main.dart';
 import 'providers/audio_capture_provider.dart';
 

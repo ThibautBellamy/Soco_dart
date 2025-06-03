@@ -1,7 +1,7 @@
-import 'package:soco_flutter/src/models/speaker.dart';
-import 'package:soco_flutter/src/models/track.dart';
-import 'package:soco_flutter/src/services/av_transport.dart';
-import 'package:soco_flutter/src/services/content_directory.dart';
+import 'package:soco_dart/src/models/speaker.dart';
+import 'package:soco_dart/src/models/track.dart';
+import 'package:soco_dart/src/services/av_transport.dart';
+import 'package:soco_dart/src/services/content_directory.dart';
 
 /// Manages the playback queue for a Sonos speaker
 class SonosQueue {
