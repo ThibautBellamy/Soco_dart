@@ -1,4 +1,4 @@
-import 'package:soco_flutter/soco_flutter.dart';
+import 'package:soco_flutter/soco_dart.dart';
 import 'package:soco_flutter/src/utils/utils.dart';
 
 class Speaker {

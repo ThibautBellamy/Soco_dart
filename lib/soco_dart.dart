@@ -1,4 +1,4 @@
-library soco_flutter;
+library soco_dart;
 
 // Core functionality
 export 'src/discovery.dart';

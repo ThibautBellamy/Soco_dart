@@ -1,4 +1,4 @@
-# SoCo Flutter - Sonos Controller for Flutter
+# SoCo dart - Sonos Controller for Flutter
 
 A Flutter library to control Sonos speakers, inspired by the Python SoCo library.
 
@@ -16,7 +16,7 @@ A Flutter library to control Sonos speakers, inspired by the Python SoCo library
 
 ```yaml
 dependencies:
-  soco_flutter: ^0.1.0
+  soco_dart: ^0.1.0
 ```
 
 ## Usage
